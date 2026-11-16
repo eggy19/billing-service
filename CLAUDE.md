@@ -79,5 +79,13 @@ npm run start:dev          # port 3002
 npm test
 npx tsc --noEmit -p tsconfig.build.json
 npm run migration:generate -- src/database/migrations/<Name>
-npm run migration:run
+npm run migration:run      # hook pre-nya (scripts/ensure-schema.js) membuat schema DB_SCHEMA bila belum ada
+npm run migration:revert   # down tidak men-drop schema
 ```
+
+Migration WAJIB lewat `npm run migration:*`: hook `pre*` (pembuat schema) tidak jalan bila
+`typeorm` dipanggil langsung, dan migration pertama gagal bila schema belum ada.
+Migration membaca nama schema dari DataSource (`DB_SCHEMA`), bukan hardcode. Building block:
+`DocumentNumberService` (`src/common/document-number/`), `BillingSettingService.getOrCreate`,
+`PaymentMethodService.findActiveByCode` (lazy-create CASH). Entity semua tabel ada di
+`src/modules/*/entities/` dan `src/common/document-number/`.

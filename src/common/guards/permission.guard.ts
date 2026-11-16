@@ -17,7 +17,7 @@ import { BusinessException } from '../exceptions/business.exception';
 /**
  * Global default-deny permission guard (BR-BL-02). Selalu aktif — tidak ada
  * flag rollout seperti Inventory karena Gateway sudah mengirim claim.
- * - `@PermissionExempt()` handlers/controllers and internal routes are skipped.
+ * - `@PermissionExempt()` handlers/controllers (health, `/billing/internal/*`) are skipped.
  * - Any other handler needs one of its declared permissions in
  *   `RequestContext.permissions`; handler tanpa deklarasi ditolak.
  */
@@ -38,8 +38,9 @@ export class PermissionGuard implements CanActivate {
       return true;
     }
 
+    // Route internal tidak di-bypass di sini: handler `/billing/internal/*` wajib
+    // memakai @PermissionExempt() (CLAUDE.md), sehingga handler tanpa dekorator tetap ditolak.
     const ctx = RequestContext.get();
-    if (ctx?.isInternal) return true;
 
     const required =
       this.reflector.get<string[] | undefined>(

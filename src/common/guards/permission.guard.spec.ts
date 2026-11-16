@@ -126,10 +126,13 @@ describe('PermissionGuard (default-deny, always on)', () => {
     ).toThrow(BusinessException);
   });
 
-  it('internal context is not checked', () => {
-    expect(
+  it('internal context does not bypass default-deny (needs @PermissionExempt)', () => {
+    expect(() =>
       check(SampleController, 'create', { isInternal: true, permissions: [] }),
-    ).toBe(true);
+    ).toThrow(BusinessException);
+    expect(check(ExemptController, 'anything', { isInternal: true })).toBe(
+      true,
+    );
   });
 
   it('@PermissionExempt controllers skip the check', () => {
