@@ -53,7 +53,8 @@ ada di root [`../CLAUDE.md`](../CLAUDE.md).
   (`src/modules/shift/shift-guard.port.ts`) bekerja dalam transaksi milik caller (BR-MD-03).
 - **Error**: katalog `BIL_xxx` di `src/common/constants/error-codes.ts`; tambah kode baru di
   sana, jangan hardcode pesan di service. Envelope error `{ success: false, code, message,
-  errors?, timestamp }`; sukses `{ success, message, data, pagination?, timestamp }` dengan key
+  errors?, details?, timestamp }` (`BusinessException(key, message?, { errors?, details? })`;
+  `details: { saleId, saleNumber }` pada BIL_016/BIL_017); sukses `{ success, message, data, pagination?, timestamp }` dengan key
   **camelCase**; body request snake_case.
 - **Log**: terstruktur dengan `requestId`, `userId`, `tenantId`, `branchId`, `saleId`. Jangan
   log body request/response, `customer_name`, atau claim `name` (BR-BL-04).
@@ -87,5 +88,8 @@ Migration WAJIB lewat `npm run migration:*`: hook `pre*` (pembuat schema) tidak 
 `typeorm` dipanggil langsung, dan migration pertama gagal bila schema belum ada.
 Migration membaca nama schema dari DataSource (`DB_SCHEMA`), bukan hardcode. Building block:
 `DocumentNumberService` (`src/common/document-number/`), `BillingSettingService.getOrCreate`,
-`PaymentMethodService.findActiveByCode` (lazy-create CASH). Entity semua tabel ada di
+`PaymentMethodService.findActiveByCode` (lazy-create CASH). Checkout (`src/modules/sale/`):
+`SaleService` hanya bergantung pada token `SHIFT_GUARD` dan port `INVENTORY_DISPENSING_CLIENT`
+(implementasi HTTP `InventoryHttpClient`, env `INVENTORY_INTERNAL_URL` + `INTERNAL_SERVICE_TOKEN`);
+test unit memakai fake keduanya. Entity semua tabel ada di
 `src/modules/*/entities/` dan `src/common/document-number/`.

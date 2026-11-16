@@ -24,6 +24,10 @@ const EXPECTED = new Map<string, string[]>([
   ['POST shifts/:id/close', ['billing.shift.close']],
   ['GET shifts', ['billing.shift.read', 'billing.shift.read_all']],
   ['GET shifts/:id', ['billing.shift.read', 'billing.shift.read_all']],
+  ['GET payment-methods', ['billing.sale.create']],
+  ['POST sales', ['billing.sale.create']],
+  ['GET sales', ['billing.sale.read', 'billing.sale.read_all']],
+  ['GET sales/:id', ['billing.sale.read', 'billing.sale.read_all']],
 ]);
 
 function controllerFiles(dir: string): string[] {

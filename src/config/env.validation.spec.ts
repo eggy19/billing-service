@@ -33,7 +33,19 @@ describe('validateEnv', () => {
         DB_PASSWORD: 'x',
         CORS_ORIGINS: 'https://app.example.com',
       }),
+    ).toThrow(/INVENTORY_INTERNAL_URL/);
+    expect(() =>
+      validateEnv({
+        NODE_ENV: 'production',
+        INTERNAL_SERVICE_TOKEN: 'a-real-secret',
+        DB_PASSWORD: 'x',
+        CORS_ORIGINS: 'https://app.example.com',
+        INVENTORY_INTERNAL_URL: 'http://inventory:3001',
+      }),
     ).not.toThrow();
+    // Di development/test boleh kosong (default localhost).
+    expect(() => validateEnv({ NODE_ENV: 'development' })).not.toThrow();
+    expect(() => validateEnv({ NODE_ENV: 'test' })).not.toThrow();
   });
 
   it('strict for anything except development/test/empty (typos like prod/Production)', () => {

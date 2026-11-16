@@ -21,6 +21,10 @@ export default () => ({
   security: {
     internalServiceToken: process.env.INTERNAL_SERVICE_TOKEN ?? '',
   },
+  inventory: {
+    // Billing -> Inventory langsung (bukan lewat Gateway), BR-IN-02.
+    internalUrl: process.env.INVENTORY_INTERNAL_URL ?? 'http://localhost:3001',
+  },
   cors: {
     // Comma-separated allowed origins. Empty = allow any origin (dev only).
     origins: process.env.CORS_ORIGINS ?? '',

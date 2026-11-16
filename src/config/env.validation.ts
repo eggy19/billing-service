@@ -41,6 +41,10 @@ export function validateEnv(
     if (!str('CORS_ORIGINS')) {
       errors.push('CORS_ORIGINS is required (explicit origins)');
     }
+    // Checkout memanggil Inventory langsung (BR-SL-05): jangan diam-diam ke localhost.
+    if (!str('INVENTORY_INTERNAL_URL')) {
+      errors.push('INVENTORY_INTERNAL_URL is required');
+    }
   }
 
   if (errors.length > 0) {

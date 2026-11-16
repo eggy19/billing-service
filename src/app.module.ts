@@ -15,6 +15,7 @@ import { TenantContextMiddleware } from './common/middleware/tenant-context.midd
 import { HealthController } from './health.controller';
 import { LoggerModule } from './logger/logger.module';
 import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
+import { SaleModule } from './modules/sale/sale.module';
 import { SettingModule } from './modules/setting/setting.module';
 import { ShiftModule } from './modules/shift/shift.module';
 
@@ -31,6 +32,7 @@ import { ShiftModule } from './modules/shift/shift.module';
     SettingModule,
     PaymentMethodModule,
     ShiftModule,
+    SaleModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => buildTypeOrmOptions(config),

@@ -36,6 +36,24 @@ describe('AllExceptionsFilter (BR-BL-03)', () => {
     expect(typeof body.timestamp).toBe('string');
   });
 
+  it('BusinessException membawa errors[] dan details secara aditif (BIL_012, BIL_017)', () => {
+    const errors = [{ field: 'items[0]', message: 'Harga saat ini 6000.00' }];
+    const withErrors = run(
+      new BusinessException('BIL_012', undefined, { errors }),
+    );
+    expect(withErrors.status).toBe(409);
+    expect(withErrors.body).toMatchObject({ code: 'BIL_012', errors });
+    expect(withErrors.body).not.toHaveProperty('details');
+
+    const details = { saleId: 's-1', saleNumber: null };
+    const withDetails = run(
+      new BusinessException('BIL_017', undefined, { details }),
+    );
+    expect(withDetails.status).toBe(500);
+    expect(withDetails.body).toMatchObject({ code: 'BIL_017', details });
+    expect(withDetails.body).not.toHaveProperty('errors');
+  });
+
   it('class-validator failure -> 400 VALIDATION_ERROR with errors[]', () => {
     const { status, body } = run(
       new BadRequestException({

@@ -47,6 +47,22 @@ export class PaymentMethodService {
     return row?.is_active ? row : null;
   }
 
+  /**
+   * Metode aktif cabang untuk `GET /billing/payment-methods` (AC-SL-20). CASH
+   * di-lazy-create lewat `findActiveByCode` (BR-BL-05); CASH yang dinonaktifkan
+   * tidak ikut daftar.
+   */
+  async listActive(
+    tenantId: string,
+    branchId: string,
+  ): Promise<PaymentMethod[]> {
+    await this.findActiveByCode(tenantId, branchId, CASH_METHOD_CODE);
+    return this.repo.find({
+      where: { tenant_id: tenantId, branch_id: branchId, is_active: true },
+      order: { code: 'ASC' },
+    });
+  }
+
   private findAny(
     tenantId: string,
     branchId: string,

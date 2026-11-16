@@ -17,6 +17,7 @@ interface ErrorEnvelope {
   code: string;
   message: string;
   errors?: { field: string; message: string }[];
+  details?: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -40,6 +41,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let code: string = ERROR_CODES.INTERNAL_SERVER_ERROR.code;
     let message: string = ERROR_CODES.INTERNAL_SERVER_ERROR.message;
     let fieldErrors: { field: string; message: string }[] | undefined;
+    let details: Record<string, unknown> | undefined;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
@@ -61,6 +63,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         } else {
           code = (b.code as string) ?? this.codeFromStatus(status);
           message = (b.message as string) ?? message;
+          // Tambahan aditif BusinessException (errors per baris, details).
+          if (Array.isArray(b.errors)) {
+            fieldErrors = b.errors as { field: string; message: string }[];
+          }
+          if (typeof b.details === 'object' && b.details !== null) {
+            details = b.details as Record<string, unknown>;
+          }
         }
       }
     }
@@ -79,6 +88,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       code,
       message,
       ...(fieldErrors ? { errors: fieldErrors } : {}),
+      ...(details ? { details } : {}),
       timestamp: new Date().toISOString(),
     };
 
