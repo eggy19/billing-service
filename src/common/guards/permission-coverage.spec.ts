@@ -17,8 +17,14 @@ import {
 const SRC = resolve(__dirname, '../..');
 const EXEMPT_CONTROLLERS = ['HealthController'];
 
-// Belum ada endpoint bisnis di tahap scaffold; isi sesuai §7.5 saat modul ditambahkan.
-const EXPECTED = new Map<string, string[]>([]);
+// Isi sesuai §7.5 saat modul ditambahkan (key = `METHOD path` tanpa global prefix `billing`).
+const EXPECTED = new Map<string, string[]>([
+  ['GET shifts/current', ['billing.shift.read', 'billing.shift.read_all']],
+  ['POST shifts/open', ['billing.shift.open']],
+  ['POST shifts/:id/close', ['billing.shift.close']],
+  ['GET shifts', ['billing.shift.read', 'billing.shift.read_all']],
+  ['GET shifts/:id', ['billing.shift.read', 'billing.shift.read_all']],
+]);
 
 function controllerFiles(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {

@@ -1,4 +1,17 @@
-import { toJakartaDate, toJakartaDateKey } from './jakarta-date.util';
+import {
+  jakartaDayStart,
+  toJakartaDate,
+  toJakartaDateKey,
+} from './jakarta-date.util';
+
+describe('jakartaDayStart', () => {
+  it('00:00 WIB = 17:00Z hari sebelumnya, konsisten dengan toJakartaDate', () => {
+    const start = jakartaDayStart('2026-11-14');
+    expect(start.toISOString()).toBe('2026-11-13T17:00:00.000Z');
+    expect(toJakartaDate(start)).toBe('2026-11-14');
+    expect(toJakartaDate(new Date(start.getTime() - 1))).toBe('2026-11-13');
+  });
+});
 
 describe('toJakartaDate', () => {
   it('lintas tengah malam WIB: 16:59Z masih hari yang sama, 17:00Z hari berikutnya', () => {

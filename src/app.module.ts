@@ -16,6 +16,7 @@ import { HealthController } from './health.controller';
 import { LoggerModule } from './logger/logger.module';
 import { PaymentMethodModule } from './modules/payment-method/payment-method.module';
 import { SettingModule } from './modules/setting/setting.module';
+import { ShiftModule } from './modules/shift/shift.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { SettingModule } from './modules/setting/setting.module';
     DocumentNumberModule,
     SettingModule,
     PaymentMethodModule,
+    ShiftModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => buildTypeOrmOptions(config),
