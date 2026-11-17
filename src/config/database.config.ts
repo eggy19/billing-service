@@ -15,5 +15,8 @@ export const buildTypeOrmOptions = (
   migrations: [__dirname + '/../database/migrations/*{.ts,.js}'],
   // Schema changes go through migrations only — never auto-sync in any env.
   synchronize: false,
-  logging: config.get<string>('app.env') === 'development' ? ['error'] : false,
+  // Off in every env: TypeORM's error logger prints the raw SQL + parameters
+  // (customer_name, cashier_name, request_items) — BR-BL-04. Query errors still
+  // surface through AllExceptionsFilter (message only).
+  logging: false,
 });
